@@ -9,7 +9,7 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
-camera.position.set(0, 4, 8);
+camera.position.set(4, 2.5, 6);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -32,78 +32,212 @@ ground.position.y = -1;
 scene.add(ground);
 
 // DINO
+
 const dino = new THREE.Group();
 
+const green =
+new THREE.MeshLambertMaterial({
+  color:0x59c74f
+});
+
+const darkGreen =
+new THREE.MeshLambertMaterial({
+  color:0x3f9e38
+});
+
+// BODY
+
 const body = new THREE.Mesh(
-  new THREE.BoxGeometry(1.4, 1, 2),
-  new THREE.MeshLambertMaterial({ color: 0x4caf50 })
+  new THREE.BoxGeometry(
+    1.4,
+    0.9,
+    1.8
+  ),
+  green
 );
+
+body.position.y = 0.4;
+
 dino.add(body);
 
+// HEAD
+
 const head = new THREE.Mesh(
-  new THREE.BoxGeometry(0.9, 0.7, 0.9),
-  new THREE.MeshLambertMaterial({ color: 0x4caf50 })
+  new THREE.BoxGeometry(
+    0.9,
+    0.7,
+    0.9
+  ),
+  green
 );
-head.position.set(0, 0.35, 1.2);
+
+head.position.set(
+  0,
+  0.8,
+  0.9
+);
+
 dino.add(head);
 
-const nose = new THREE.Mesh(
-  new THREE.BoxGeometry(0.5, 0.3, 0.8),
-  new THREE.MeshLambertMaterial({ color: 0x43a047 })
-);
-nose.position.set(0, 0.15, 1.95);
-dino.add(nose);
+// MOUTH
 
-const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+const mouth = new THREE.Mesh(
+  new THREE.BoxGeometry(
+    0.55,
+    0.25,
+    0.8
+  ),
+  darkGreen
+);
+
+mouth.position.set(
+  0,
+  0.6,
+  1.55
+);
+
+dino.add(mouth);
+
+// TAIL
+
+const tail = new THREE.Mesh(
+  new THREE.BoxGeometry(
+    0.3,
+    0.3,
+    1.4
+  ),
+  darkGreen
+);
+
+tail.position.set(
+  0,
+  0.4,
+  -1.5
+);
+
+tail.rotation.x = -0.7;
+
+dino.add(tail);
+
+// EYES
+
+const eyeMat =
+new THREE.MeshBasicMaterial({
+  color:0x000000
+});
 
 const eyeL = new THREE.Mesh(
-  new THREE.BoxGeometry(0.08, 0.08, 0.08),
-  eyeMaterial
+  new THREE.BoxGeometry(
+    0.06,
+    0.06,
+    0.06
+  ),
+  eyeMat
 );
-eyeL.position.set(-0.18, 0.45, 1.62);
+
+eyeL.position.set(
+  -0.18,
+  0.92,
+  1.32
+);
+
 dino.add(eyeL);
 
 const eyeR = eyeL.clone();
+
 eyeR.position.x = 0.18;
+
 dino.add(eyeR);
 
-const tail = new THREE.Mesh(
-  new THREE.BoxGeometry(0.35, 0.35, 1.6),
-  new THREE.MeshLambertMaterial({ color: 0x43a047 })
-);
-tail.position.set(0, -0.1, -1.7);
-tail.rotation.x = -0.5;
-dino.add(tail);
-
 // LEGS
-const legs = [];
 
-for (let side of [-1, 1]) {
-  for (let z of [-0.5, 0.5]) {
-    const leg = new THREE.Mesh(
-      new THREE.BoxGeometry(0.25, 0.8, 0.25),
-      new THREE.MeshLambertMaterial({ color: 0x2e7d32 })
-    );
-    leg.position.set(side * 0.35, -0.9, z);
-    dino.add(leg);
-    legs.push(leg);
-  }
+const legFL = new THREE.Group();
+const legFR = new THREE.Group();
+const legBL = new THREE.Group();
+const legBR = new THREE.Group();
+
+function buildLeg(group){
+
+  const leg = new THREE.Mesh(
+    new THREE.BoxGeometry(
+      0.25,
+      0.8,
+      0.25
+    ),
+    darkGreen
+  );
+
+  leg.position.y = -0.4;
+
+  group.add(leg);
 }
+
+buildLeg(legFL);
+buildLeg(legFR);
+buildLeg(legBL);
+buildLeg(legBR);
+
+legFL.position.set(
+  -0.4,
+  0,
+  0.5
+);
+
+legFR.position.set(
+  0.4,
+  0,
+  0.5
+);
+
+legBL.position.set(
+  -0.4,
+  0,
+  -0.5
+);
+
+legBR.position.set(
+  0.4,
+  0,
+  -0.5
+);
+
+dino.add(legFL);
+dino.add(legFR);
+dino.add(legBL);
+dino.add(legBR);
 
 // ARMS
-for (let side of [-1, 1]) {
-  const arm = new THREE.Mesh(
-    new THREE.BoxGeometry(0.15, 0.4, 0.15),
-    new THREE.MeshLambertMaterial({ color: 0x2e7d32 })
-  );
-  arm.position.set(side * 0.8, -0.1, 0.7);
-  dino.add(arm);
-}
 
-dino.position.y = 0;
+const armL = new THREE.Mesh(
+  new THREE.BoxGeometry(
+    0.12,
+    0.35,
+    0.12
+  ),
+  darkGreen
+);
+
+armL.position.set(
+  -0.8,
+  0.25,
+  0.6
+);
+
+dino.add(armL);
+
+const armR = armL.clone();
+
+armR.position.x = 0.8;
+
+dino.add(armR);
+
 scene.add(dino);
 
-camera.lookAt(dino.position);
+camera.lookAt(
+  0,
+  0.7,
+  0
+);;
 
 // OBSTACLES
 const obstacles = [];
@@ -131,7 +265,11 @@ function spawnCactus() {
   arm2.position.set(-0.4, 0.1, 0);
   cactus.add(arm2);
 
-  cactus.position.set(0, 0, -100);
+  cactus.position.set(
+  (Math.random()-0.5)*1.5,
+  0,
+  -100
+);
   scene.add(cactus);
   obstacles.push(cactus);
 }
@@ -163,12 +301,17 @@ function animate() {
   if (scoreElement) scoreElement.textContent = score;
 
   // run animation
-  const t = performance.now() * 0.02;
-  legs[0].rotation.x = Math.sin(t) * 0.6;
-  legs[1].rotation.x = -Math.sin(t) * 0.6;
-  legs[2].rotation.x = -Math.sin(t) * 0.6;
-  legs[3].rotation.x = Math.sin(t) * 0.6;
-
+const t =
+performance.now() * 0.015;
+const run =
+Math.sin(t) * 0.7;
+legFL.rotation.x = run;
+legBR.rotation.x = run;
+legFR.rotation.x = -run;
+legBL.rotation.x = -run;
+tail.rotation.z =
+Math.sin(t * 0.7) * 0.12;
+  
   // gravity
   velocityY -= 0.01;
   dino.position.y += velocityY;
